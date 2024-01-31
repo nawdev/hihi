@@ -1,31 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Player Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Music Player</title>
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
 
-    <audio id="myAudio" autoplay>
-      <source src="http://15.235.142.199/api/voice" type="audio/mp3" />
-  </audio>
+<div id="Content" style="display: none;">
+    <!-- Content to be shown after entering the name -->
+    <p>This is the content after entering the name.</p>
+</div>
 
-<button id="goToRestButton" onclick="playAudioAndCallAPI()">Go to Rest API</button>
-
+<!-- Include SweetAlert2 and your JavaScript code -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
-  function playAudioAndCallAPI() {
-    var audio = document.getElementById("myAudio");
-    
-    // Memastikan audio dimulai dari awal jika sudah dimainkan sebelumnya
-    audio.currentTime = 0;
-    
-    // Memainkan audio
-    audio.play();
+    var swals = Swal;
 
-    // Tambahan: Tambahkan kode untuk memanggil REST API di sini
-    // Contoh: console.log("Memanggil REST API...");
-  }
+    function play() {
+        const audio = new Audio("http://15.235.142.199/api/voice");
+        audio.play();
+        audio.loop = true;
+    }
+
+    function showDiv() {
+        document.getElementById('Content').style.display = "block";
+    }
+
+    async function mulai() {
+        var { value: nama } = await swals.fire({
+            title: 'Nama kamu?',
+            input: 'text',
+            confirmButtonText: 'Lanjut',
+            allowOutsideClick: false,
+            showCancelButton: false,
+        });
+
+        if (nama) {
+            window.nama = nama;
+            await swals.fire(`Memulai 🎵musik random untukmu &#10084;&#65039;`);
+            play();
+            await swals.fire(`Hai, ${nama}!\nSelamat datang dan enjoy!`);
+            showDiv();
+        } else {
+            await swals.fire('Isi namanya');
+            await swals.fire('Gak boleh kosong');
+            mulai();
+        }
+    }
+
+    // Call the start function
+    mulai();
 </script>
 
 </body>
